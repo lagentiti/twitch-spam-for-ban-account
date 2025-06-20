@@ -1,6 +1,6 @@
 const { chromium } = require('playwright');
 
-module.exports = async ({ email, password }) => {
+module.exports = async ({ username, password, account }) => {
   const browser = await chromium.launch({
     headless: false,
     executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
@@ -19,25 +19,9 @@ module.exports = async ({ email, password }) => {
     });
   });
 
-  await page.goto('https://account.proton.me/mail');
+  await page.goto('https://twitch.tv/'+username);
   await page.waitForTimeout(2000);
-  await page.fill('input#username', email);
-  await page.fill('input#password', password);
-  await page.click('button[class="button w-full button-large button-solid-norm mt-6"]');
-  await page.waitForTimeout(7000);
-
-  const maDiv = await page.locator('span[class="inline-block max-w-full text-ellipsis"] > span')
-
-  // Récupérer le texte de cette div
-  const email = await maDiv.innerText();
-  if(email = "") {
-
-  } else {
-
-  };
 
   // Fermer le navigateur
   // await browser.close();
-  const code = 1;
-  return code;
 };
