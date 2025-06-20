@@ -1,5 +1,7 @@
 const { chromium } = require('playwright');
 const random = require('./random.js');
+const { generateTempEmail, getEmails } = require('./temp-mail.js')
+const delay = require('./delay.js');
 
 module.exports = async () => {
   const name = random(16);
@@ -41,20 +43,33 @@ module.exports = async () => {
   await page.waitForTimeout(2000);
   await page.click('button[class="button w-full button-large button-ghost-norm"]');
 
-  // la y a un capchat, il faut le skip
-  // c a la main de l'utilisateur de le faire
-  // ta 20 secondes pour le faire
-
-  await page.waitForTimeout(2000);
+  // faut mettre l'email temporaire 
+  await page.click('button[data-testid="tab-header-e-mail-button"]');
+  const email = await generateTempEmail();
+  await page.fill('input#email', email);
   await page.click('button[class="button w-full button-large button-solid-norm mt-6"]');
-  await page.click('button[class="button w-full button-large button-ghost-norm mt-2"]');
-  await page.click('button[class="button w-full button-medium button-solid-norm"]');
-  await page.waitForTimeout(1000);
-  await page.click('button[class="button w-full button-large button-solid-norm"]');
-  await page.click('button[class="button w-full button-large button-outline-weak"]');
-  await page.click('button[class="button w-full button-large button-solid-norm"]');
-  await page.click('button[class="button w-full button-large button-solid-norm"]');
-  await browser.close();
+
+  await delay(5000);
+  function checkEmail() {
+    return getEmails(email).then(emails => {
+      if (emails.length > 0) {
+        return emails[0].subject.includes('Proton Mail');
+      }
+      return false;
+    });
+  };
+  console.log(await checkEmail());
+
+  // await page.waitForTimeout(20000);
+  // await page.click('button[class="button w-full button-large button-solid-norm mt-6"]');
+  // await page.click('button[class="button w-full button-large button-ghost-norm mt-2"]');
+  // await page.click('button[class="button w-full button-medium button-solid-norm"]');
+  // await page.waitForTimeout(1000);
+  // await page.click('button[class="button w-full button-large button-solid-norm"]');
+  // await page.click('button[class="button w-full button-large button-outline-weak"]');
+  // await page.click('button[class="button w-full button-large button-solid-norm"]');
+  // await page.click('button[class="button w-full button-large button-solid-norm"]');
+  // await browser.close();
   
   return {
     email: name + '@proton.me',
