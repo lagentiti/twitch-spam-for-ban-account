@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Twitch Signup Helper",
+  "version": "1.0",
+  "description": "Automates signup process on Twitch",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://localhost:6969/*",
+    "http://localhost/*",
+    "https://www.twitch.tv/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.twitch.tv/signup*"],
+      "js": ["signup.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.twitch.tv/login*"],
+      "js": ["login.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.twitch.tv/*"],
+      "js": ["report.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "cc@cc.com"
+    }
+  }
+}
